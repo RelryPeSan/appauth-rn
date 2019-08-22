@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+    ActivityIndicator,
     Alert,
     KeyboardAvoidingView,
     Text,
@@ -9,59 +10,80 @@ import {
     StyleSheet,
     ScrollView,
 } from 'react-native';
-import styles from '../../../styles';
+import globalStyles from '../../../styles';
 import md5 from 'md5'
 
 
 import api from '../../../services/api';
 
 export default function Cadastro({ navigation }){
-    const [ nome, setNome ] = useState('');
-    const [ email, setEmail ] = useState('');
-    const [ login, setLogin ] = useState('');
-    const [ senha, setSenha ] = useState('');
-    const [ confirmarSenha, setConfirmarSenha ] = useState('');
+    const [ nome, setNome ] = useState('Relry Pereira dos Santos');
+    const [ email, setEmail ] = useState('relrypesan@gmail.com');
+    const [ login, setLogin ] = useState('relrypesan');
+    const [ senha, setSenha ] = useState('12345678');
+    const [ confirmarSenha, setConfirmarSenha ] = useState('12345678');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         this.textInput1.focus();
     }, []);
 
+    useEffect(() => {
+        console.log(`mudou nome: ${nome}`);
+    }, [nome, email, login, senha, confirmarSenha]);
+
     async function handleFinalizarCadastro(){
+        setLoading(true);
+
         let regex = /[^a-zA-Z0-9\-_.]/;
 
         // teste nome
         if(nome === ''){
             Alert.alert('Erro!', 'Por favor, insira seu nome.');
+            setNome(undefined);
+            setLoading(false);
             return;
         }
 
         // teste email
         if(!validateEmail(email)){
             Alert.alert('Erro!', 'Por favor, informe um email válido.');
+            setEmail(undefined);
+            setLoading(false);
             return;
         }
 
         // teste login
         if(regex.test(login)){
             Alert.alert('Login inválido!', 'Caracteres permitidos: letras, números, underline, hifen e ponto.');
+            setLogin(undefined);
+            setLoading(false);
             return;
         }
         if(login.length < 8){
             Alert.alert('Login inválido!', 'Seu login deve conter pelo menos 8 caracteres.');
+            setLogin(undefined);
+            setLoading(false);
             return;
         }
 
         // teste senha
         if(regex.test(senha)){
             Alert.alert('Senha inválida!', 'Sua senha só pode conter letras, números e underline.');
+            setSenha(undefined);
+            setLoading(false);
             return;
         }
         if(senha !== confirmarSenha) {
             Alert.alert('Senha inválida!', 'Os campos de senhas devem ser identicos.');
+            setSenha(undefined);
+            setLoading(false);
             return;
         }
         if(senha.length < 8) {
             Alert.alert('Senha inválida!', 'Sua senha deve conter pelo menos 8 caracteres.');
+            setSenha(undefined);
+            setLoading(false);
             return;
         }
 
@@ -71,14 +93,32 @@ export default function Cadastro({ navigation }){
             const res = await api.get('/usuario', {strlogin: login});
             console.log(`retorno1: ${res.data}`);
             const response = await api.post('/usuario', {strnome: nome, stremail: email, strlogin: login, strsenha: hashMd5});
-            console.log(`retorno2: ${response.data}`);
+            console.log(response.data);
+
+            // verifica a existencia de outra conta com email ou login repetido
+            if(response.data.error){
+                var campos = '';
+                if(response.data.error.existEmail){
+                    campos += 'email';
+                }
+                if(response.data.error.existLogin){
+                    if(campos !== '') campos += ', ';
+                    campos += 'login';
+                }
+
+                Alert.alert('Ops!', `Os seguintes campos não estão disponiveis: ${campos}`);
+                setLoading(false);
+                return;
+            }
         } catch(error){
             console.log({ mensagem: 'Houve algum erro!', error})
+            setLoading(false);
             return;
         }
 
-        Alert.alert('OK!', 'Usuario cadastrado com sucesso.');
+        Alert.alert('OK!', 'Estamos enviando um email para você com o código de ativação da sua conta, insira seus dados e clique em ENTRAR para digitar seu código.');
 
+        setLoading(false);
         navigation.navigate('Login');
     }
 
@@ -88,17 +128,17 @@ export default function Cadastro({ navigation }){
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container}>
-            <ScrollView style={thisStyles.containerSCrollView}>
+        <KeyboardAvoidingView style={globalStyles.container}>
+            <ScrollView style={localStyles.containerSCrollView}>
 
-                <View style={styles.infoContainer}>
-                    <Text style={styles.label}>
+                <View style={globalStyles.infoContainer}>
+                    <Text style={globalStyles.label}>
                         Nome completo:
                     </Text>
                     <TextInput
                         ref={(input) => {this.textInput1 = input}}
                         autoCapitalize='words'
-                        style={styles.input}
+                        style={[globalStyles.input, (nome === undefined ? localStyles.campoInvalido : null)]}
                         placeholder='Digite seu nome completo'
                         value={nome}
                         onChangeText={setNome}
@@ -108,15 +148,16 @@ export default function Cadastro({ navigation }){
                     />
                 </View>
 
-                <View style={styles.infoContainer}>
-                    <Text style={styles.label}>
+                <View style={globalStyles.infoContainer}>
+                    <Text style={globalStyles.label}>
                         Email:
                     </Text>
                     <TextInput
                         ref={(input) => {this.textInput2 = input}}
                         autoCapitalize='none'
                         autoCorrect={false}
-                        style={styles.input}
+                        keyboardType='email-address'
+                        style={[globalStyles.input, (email === undefined ? localStyles.campoInvalido : null)]}
                         placeholder='Ex.: exemplo@email.com.br'
                         value={email}
                         onChangeText={setEmail}
@@ -126,15 +167,15 @@ export default function Cadastro({ navigation }){
                     />
                 </View>
 
-                <View style={styles.infoContainer}>
-                    <Text style={styles.label}>
+                <View style={globalStyles.infoContainer}>
+                    <Text style={globalStyles.label}>
                         Login:
                     </Text>
                     <TextInput
                         ref={(input) => {this.textInput3 = input}}
                         autoCapitalize='none'
                         autoCorrect={false}
-                        style={styles.input}
+                        style={[globalStyles.input, (login === undefined ? localStyles.campoInvalido : null)]}
                         placeholder='Digite seu login'
                         value={login}
                         onChangeText={setLogin}
@@ -144,14 +185,14 @@ export default function Cadastro({ navigation }){
                     />
                 </View>
                 
-                <View style={styles.infoContainer}>
-                    <Text style={styles.label}>
+                <View style={globalStyles.infoContainer}>
+                    <Text style={globalStyles.label}>
                         Senha:
                     </Text>
                     <TextInput
                         ref={(input) => {this.textInput4 = input}}
                         secureTextEntry={true}
-                        style={styles.input}
+                        style={[globalStyles.input, (senha === undefined ? localStyles.campoInvalido : null)]}
                         placeholder='Digite sua senha'
                         value={senha}
                         onChangeText={setSenha}
@@ -161,14 +202,14 @@ export default function Cadastro({ navigation }){
                     />
                 </View>
 
-                <View style={styles.infoContainer}>
-                    <Text style={styles.label}>
+                <View style={globalStyles.infoContainer}>
+                    <Text style={globalStyles.label}>
                         Confirmar senha:
                     </Text>
                     <TextInput
                         ref={(input) => {this.textInput5 = input}}
                         secureTextEntry={true}
-                        style={styles.input}
+                        style={[globalStyles.input, (senha === undefined ? localStyles.campoInvalido : null)]}
                         placeholder='Confirme sua senha'
                         value={confirmarSenha}
                         onChangeText={setConfirmarSenha}
@@ -179,20 +220,29 @@ export default function Cadastro({ navigation }){
 
                 <TouchableOpacity 
                     ref={(input) => {this.buttonFinalizar = input}}
-                    style={styles.button}
+                    style={[globalStyles.button, globalStyles.buttonPurple]}
                     onPress={handleFinalizarCadastro}
                 >
-                    <Text style={styles.buttonLabel}>
+                    <Text style={globalStyles.buttonLabel}>
                         FINALIZAR
                     </Text>
                 </TouchableOpacity>
 
             </ScrollView>
+            { loading ? 
+                <ActivityIndicator 
+                    style={globalStyles.loading}
+                    size='large'
+                    color='#84a'
+                />
+                : null
+            }
+
         </KeyboardAvoidingView>
     );
 };
 
-const thisStyles = StyleSheet.create({
+const localStyles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#eee',
@@ -205,5 +255,9 @@ const thisStyles = StyleSheet.create({
         alignSelf: 'stretch',
         paddingHorizontal: 20,
         paddingBottom: 10,
+    },
+
+    campoInvalido: {
+        borderColor: '#c32',
     },
 });

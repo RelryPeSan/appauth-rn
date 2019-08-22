@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+const globalStyles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#eee',
@@ -9,7 +9,7 @@ export default StyleSheet.create({
     },
 
     infoContainer: {
-        marginBottom: 2,
+        marginBottom: 5,
         alignSelf: 'stretch',
         justifyContent: 'flex-start',
     },
@@ -37,21 +37,38 @@ export default StyleSheet.create({
     },
 
     button: {
-        marginVertical: 5,
         alignSelf: 'stretch',
-        backgroundColor: '#84a',
         justifyContent: 'center',
         alignItems: 'center',
         height: 40,
-        borderColor: '#849',
         borderWidth: 2,
         borderRadius: 5,
+    },
+
+    buttonPurple: {
+        borderColor: '#849',
+        backgroundColor: '#84a',
+    },
+    
+    buttonGreen: {
+        borderColor: '#5a6',
+        backgroundColor: '#3d4',
     },
 
     buttonLabel: {
         fontSize: 16,
         fontWeight: 'bold',
         color: '#fff',
-    }
+    },
+
+    loading: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(150,150,150, 0.7)',
+        zIndex: 100,
+    },
 
 });
+
+module.exports = globalStyles;

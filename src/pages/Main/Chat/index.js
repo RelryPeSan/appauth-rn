@@ -6,11 +6,11 @@ import {
 } from 'react-native';
 import globalStyles from '../../../styles';
 
-export default function Modelo(){
+export default function Chat(){
     return (
-        <View style={styles.container}>
+        <View style={localStyles.container}>
             <Text>
-                Página modelo.
+                Página Chat.
             </Text>
         </View>
     );
