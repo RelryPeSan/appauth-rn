@@ -1,23 +1,22 @@
 import ReactNavigation, { createStackNavigator } from 'react-navigation';
 
-import LoginScreen from './Login';
-import CadastroScreen from './Cadastro';
+import LoginScreen from './Login/Login';
+import CadastroScreen from './Cadastro/Cadastro';
 
 export default AppStackNatigation = createStackNavigator({
-    Login: {
-        screen: LoginScreen,
-        navigationOptions: {
-            header: null
-        }
+  Login: {
+    screen: LoginScreen,
+    navigationOptions: {
+      header: null,
     },
-    Cadastro: {
-        screen: CadastroScreen,
-        navigationOptions: {
-            title: 'Cadastro',
-        }
+  },
+  Cadastro: {
+    screen: CadastroScreen,
+    navigationOptions: {
+      title: 'Cadastro',
     },
+  },
 }, {
-    transitionConfig: () => 
-        ReactNavigation.StackViewTransitionConfigs.SlideFromRightIOS
-    ,
+  transitionConfig: () => ReactNavigation.StackViewTransitionConfigs.SlideFromRightIOS
+  ,
 });

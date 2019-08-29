@@ -10,7 +10,7 @@ import {
     StyleSheet,
     ScrollView,
 } from 'react-native';
-import globalStyles from '../../../styles';
+import globalStyles from '../../../styles/globalStyles';
 import md5 from 'md5'
 
 

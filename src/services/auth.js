@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native';
 
-export const TOKEN_KEY = "usuario._id";
+export const TOKEN_KEY = 'usuario._id';
 
 // export const onSignIn = () => AsyncStorage.setItem(TOKEN_KEY, "true");
 
@@ -9,5 +9,5 @@ export const TOKEN_KEY = "usuario._id";
 export const isSignedIn = async () => {
   const token = await AsyncStorage.getItem(TOKEN_KEY);
 
-  return (token !== null) ? true : false;
+  return token !== null;
 };

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import DialogInput from 'react-native-dialog-input';
 import Modal from 'react-native-modal';
-import globalStyles from '../../../styles';
+import globalStyles from '../../../styles/globalStyles';
 import md5 from 'md5';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -256,6 +256,7 @@ export default function Login({ navigation }) {
                             ref={(input) => {this.textInputLogin = input}}
                             autoCapitalize='none'
                             autoCorrect={false}
+                            selectTextOnFocus={true}
                             style={globalStyles.input}
                             placeholder='Digite seu login'
                             value={username}
@@ -273,6 +274,7 @@ export default function Login({ navigation }) {
                         <TextInput
                             ref={(input) => {this.textInputSenha = input}}
                             secureTextEntry={true}
+                            selectTextOnFocus={true}
                             style={globalStyles.input}
                             placeholder='Digite sua senha'
                             value={password}

@@ -7,7 +7,9 @@ const baseURL = 'http://localhost:3000';
 // const baseURL = 'https://appauth-rn.herokuapp.com';
 
 const api = axios.create({
-    baseURL,
+  baseURL,
 });
+
+console.log(`Conectado na base: ${baseURL}`);
 
 export default api;
